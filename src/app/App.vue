@@ -5,6 +5,7 @@
       |
       <router-link to="/about">About</router-link>
     </div>
+    <p>now version: 0.6.10</p>
     <router-view/>
   </div>
 </template>

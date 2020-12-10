@@ -1,9 +1,10 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, dialog, Menu, shell, MenuItem } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import path from 'path'
+import { checkForUpdates } from './updater'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -20,11 +21,43 @@ async function createWindow () {
     webPreferences: {
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: (process.env
-        .ELECTRON_NODE_INTEGRATION as unknown) as boolean,
+      nodeIntegration: (process.env.ELECTRON_NODE_INTEGRATION as unknown) as boolean,
       preload: path.join(__dirname, 'preload.js')
     }
   })
+
+  const template = [
+    ...(process.platform === 'darwin' ? [{
+      label: app.getName(),
+      submenu: [
+        { role: 'about' },
+        { type: 'separator' },
+        { role: 'services' },
+        { type: 'separator' },
+        { role: 'hide' },
+        { role: 'hideothers' },
+        { role: 'unhide' },
+        { type: 'separator' },
+        { role: 'quit' }
+      ]
+    }] : []), {
+      label: '帮助',
+      submenu: [
+        {
+          label: '检测更新',
+          click: (item: MenuItem, focusedWindow: Electron.BrowserWindow) => {
+            checkForUpdates(item, focusedWindow)
+          }
+        },
+      ]
+    }
+  ]
+  const menu = Menu.buildFromTemplate(<any>template);
+  if (process.platform === 'darwin') {
+    Menu.setApplicationMenu(menu);
+  } else {
+    win.setMenu(menu);
+  }
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -35,7 +68,8 @@ async function createWindow () {
   } else {
     createProtocol('app')
     // Load the index.html when not in development
-    win.loadURL('app://./index.html')
+    await win.loadURL('app://./index.html')
+    await win.webContents.openDevTools()
   }
 }
 
