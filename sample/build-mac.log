@@ -1,0 +1,15 @@
+ INFO  Building app with electron-builder:
+  • electron-builder  version=22.9.1 os=19.6.0
+  • packaging       platform=darwin arch=x64 electron=9.3.5 appOutDir=dist_electron/mac
+  • downloading     url=https://github.com/electron/electron/releases/download/v9.3.5/electron-v9.3.5-darwin-x64.zip size=72 MB parts=8
+  • downloaded      url=https://github.com/electron/electron/releases/download/v9.3.5/electron-v9.3.5-darwin-x64.zip duration=855ms
+  • skipped macOS application code signing  reason=cannot find valid "Developer ID Application" identity or custom non-Apple code signing certificate, see https://electron.build/code-signing allIdentities=
+                                                   0 identities found
+
+                                                Valid identities only
+                                                   0 valid identities found
+  • building        target=macOS zip arch=x64 file=dist_electron/vue-electron-app-starter-0.1.9-mac.zip
+  • building        target=DMG arch=x64 file=dist_electron/vue-electron-app-starter-0.1.9.dmg
+  • building embedded block map  file=dist_electron/vue-electron-app-starter-0.1.9-mac.zip
+  • building block map  blockMapFile=dist_electron/vue-electron-app-starter-0.1.9.dmg.blockmap
+ DONE  Build complete!

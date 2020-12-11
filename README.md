@@ -1,7 +1,5 @@
 # vue-electron-app-starter
 
-## Features
-
 ## Project command line
 ```
 "serve": "vue-cli-service serve",
@@ -16,4 +14,4 @@
 ```
 
 ## todo
-setup FOSSA for license scan
+- setup FOSSA for license scan

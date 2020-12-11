@@ -1,0 +1,9 @@
+INFO  Building app with electron-builder:
+  • electron-builder  version=22.9.1 os=5.4.0-1031-azure
+  • packaging       platform=linux arch=x64 electron=9.3.5 appOutDir=dist_electron/linux-unpacked
+  • downloading     url=https://github.com/electron/electron/releases/download/v9.3.5/electron-v9.3.5-linux-x64.zip size=73 MB parts=4
+  • downloaded      url=https://github.com/electron/electron/releases/download/v9.3.5/electron-v9.3.5-linux-x64.zip duration=1.08s
+  • building        target=AppImage arch=x64 file=dist_electron/vue-electron-app-starter-0.1.9.AppImage
+  • downloading     url=https://github.com/electron-userland/electron-builder-binaries/releases/download/appimage-12.0.1/appimage-12.0.1.7z size=1.6 MB parts=1
+  • downloaded      url=https://github.com/electron-userland/electron-builder-binaries/releases/download/appimage-12.0.1/appimage-12.0.1.7z duration=816ms
+ DONE  Build complete!
