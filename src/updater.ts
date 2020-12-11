@@ -8,23 +8,29 @@
  * 1. create `updater.js` for the code snippet
  * 2. require `updater.js` for menu implementation, and set `checkForUpdates` callback from `updater` for the click property of `Check Updates...` MenuItem.
  */
-import { dialog, MenuItem, MessageBoxReturnValue } from "electron";
-import { autoUpdater, UpdateDownloadedEvent, UpdateInfo } from "electron-updater";
+import { app, dialog, MenuItem, MessageBoxReturnValue } from 'electron'
+import { autoUpdater, UpdateDownloadedEvent, UpdateInfo } from 'electron-updater'
 
 let updater: MenuItem
 autoUpdater.autoDownload = false
+autoUpdater.fullChangelog = true
+// fix bug: electron-updater will update even I don't call quitAndInstall after app quit
+// https://github.com/electron-userland/electron-builder/issues/2493
+autoUpdater.autoInstallOnAppQuit = false
 
 autoUpdater.on('error', (error: any) => {
-  dialog.showErrorBox('Error: ', error == null ? 'unknown' : (error.stack || error).toString())
+  dialog.showErrorBox('更新错误: ', error == null ? 'unknown' : (error.stack && error).toString() || 'unknown')
+  updater.enabled = true
 })
 
 autoUpdater.on('update-available', (info: UpdateInfo) => {
   dialog.showMessageBox({
     type: 'info',
-    title: 'Found Updates',
-    message: `New version: ${info.version}. do you want update now?`,
-    detail: "Change log: " + info.releaseNotes,
-    buttons: ['YES', 'NO']
+    title: '发现更新',
+    message: `新版本: ${info.version}. 是否立即下载？`,
+    detail: '更新内容: ' + info.releaseNotes,  // todo fix show github release notes html format,info.releaseNotes maybe Object. Or use custom window
+    buttons: ['是', '否'],
+    cancelId: 1 // when close dialog, means choose 1
   }).then((returnValue: MessageBoxReturnValue) => {
     if (returnValue.response === 0) {
       autoUpdater.downloadUpdate()
@@ -41,10 +47,10 @@ autoUpdater.on('download-progress', (progressInfo: any) => {
   // mainWindow.send()...
 })
 
-autoUpdater.on('update-not-available', () => {
+autoUpdater.on('update-not-available', (info) => {
   dialog.showMessageBox({
-    title: 'No Updates',
-    message: 'Current version is up-to-date.'
+    title: '检测更新',
+    message: `目前版本已是最新版本. 目前版本:${app.getVersion()}. 最新版本:${info.version}`
   })
   updater.enabled = true
 })
@@ -52,12 +58,14 @@ autoUpdater.on('update-not-available', () => {
 autoUpdater.on('update-downloaded', (updateDownloadedEvent: UpdateDownloadedEvent) => {
   dialog.showMessageBox({
     type: 'info',
-    title: 'Install Updates',
-    message: 'Updates downloaded, choose quit for update, or not update temporarily...',
-    buttons: ['quit and install', 'not update temporarily']
+    title: '安装更新',
+    message: '更新已下载完毕, 退出并安装, 或暂不安装？',
+    buttons: ['退出并安装', '暂不安装'],
+    defaultId: 0, // default => install
+    cancelId: 1 // close => not install
   }).then((value: MessageBoxReturnValue) => {
     if (value.response === 0) {
-      setImmediate(() => autoUpdater.quitAndInstall())
+      autoUpdater.quitAndInstall()
     }
   })
 })

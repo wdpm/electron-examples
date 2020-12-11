@@ -1,7 +1,9 @@
 {
   "name": "vue-electron-app-starter",
-  "version": "0.6.11",
+  "version": "0.1.7",
   "private": true,
+  "author": "wdpm",
+  "description": "bilibili-dd-center is an app for DD to watch multi vtuber live at the same time.",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -9,7 +11,7 @@
     "electron:build": "vue-cli-service electron:build",
     "electron:serve": "vue-cli-service electron:serve",
     "electron:publish": "vue-cli-service electron:build -p always",
-    "electron:generate-icons": "electron-icon-builder --input=./public/icon.png --output=build --flatten",
+    "electron:generate-icons": "electron-icon-builder --input=./public/icon.png --output=public --flatten",
     "postinstall": "electron-builder install-app-deps",
     "postuninstall": "electron-builder install-app-deps"
   },

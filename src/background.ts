@@ -48,15 +48,15 @@ async function createWindow () {
           click: (item: MenuItem, focusedWindow: Electron.BrowserWindow) => {
             checkForUpdates(item, focusedWindow)
           }
-        },
+        }
       ]
     }
   ]
-  const menu = Menu.buildFromTemplate(<any>template);
+  const menu = Menu.buildFromTemplate(template as any)
   if (process.platform === 'darwin') {
-    Menu.setApplicationMenu(menu);
+    Menu.setApplicationMenu(menu)
   } else {
-    win.setMenu(menu);
+    win.setMenu(menu)
   }
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
