@@ -6,6 +6,12 @@ const artifactNameInAppId = packageName.replace(/-/g, '_')
 const winIconPath = './public/icons/icon.ico'
 
 module.exports = {
+  // multi pages configuration: https://cli.vuejs.org/config/#pages
+  // example repo: https://github.com/nklayman/electron-multipage-example
+  pages: {
+    index: 'src/main.ts',
+    modalUpdate: 'src/app/subpage/modal-update/main.js'
+  },
   pluginOptions: {
     electronBuilder: {
       preload: 'src/preload.js',
@@ -15,7 +21,7 @@ module.exports = {
         publish: ['github'],
         productName: `${packageName}`,
         appId: `com.dd_center.${artifactNameInAppId}`,
-        copyright: 'Copyright © 2020 DD-Center',
+        copyright: 'Copyright © 2020 open source',
         // files: [
         //   'dist_electron',
         //   'public'
@@ -24,7 +30,7 @@ module.exports = {
         //   output: 'build'
         // },
         releaseInfo: {
-          releaseName: `${packageVersion} 版本更新`
+          releaseName: `${packageVersion} version update`
           // waring: releaseNotes will override github release notes. if you want to override github release note, enable it
           // releaseNotes: packageVersion + ' change log'
         },
@@ -43,7 +49,7 @@ module.exports = {
           installerHeaderIcon: winIconPath,
           createDesktopShortcut: true,
           createStartMenuShortcut: true,
-          shortcutName: 'Bilibili DD监控室'
+          shortcutName: 'vue-electron-app-starter'
         }
       }
     }

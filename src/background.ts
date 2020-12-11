@@ -13,7 +13,34 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { secure: true, standard: true } }
 ])
 
-async function createWindow () {
+let mainWindow
+let aboutModal
+
+function createAboutModal (parentWindow: Electron.BrowserWindow, devPath: string, prodPath: string) {
+  const window = new BrowserWindow({
+    parent: parentWindow,
+    modal: true,
+    width: 400,
+    height: 250,
+    webPreferences: {
+      enableRemoteModule: true,
+      nodeIntegration: true
+    }
+  });
+
+  if (process.env.WEBPACK_DEV_SERVER_URL) {
+    window.loadURL(process.env.WEBPACK_DEV_SERVER_URL + devPath)
+    if (!process.env.IS_TEST) window.webContents.openDevTools()
+  } else {
+    window.loadURL(`app://./${prodPath}`)
+  }
+
+  window.on('close', () => {
+    console.log('about page close')
+  })
+}
+
+async function createWindow (devPath: string, prodPath: string) {
   // Create the browser window.
   const win = new BrowserWindow({
     width: 800,
@@ -48,6 +75,12 @@ async function createWindow () {
           click: (item: MenuItem, focusedWindow: Electron.BrowserWindow) => {
             checkForUpdates(item, focusedWindow)
           }
+        },
+        {
+          label: '关于',
+          click: (item: MenuItem, focusedWindow: Electron.BrowserWindow) => {
+            createAboutModal(focusedWindow, 'modalUpdate', 'modalUpdate.html')
+          }
         }
       ]
     }
@@ -61,14 +94,11 @@ async function createWindow () {
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
-    await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string)
-    // await win.loadURL('https://www.bilibili.com/blackboard/live/live-activity-player.html?enterTheRoom=0&cid=21396545')
-
+    await win.loadURL(process.env.WEBPACK_DEV_SERVER_URL as string + devPath) // "/"
     if (!process.env.IS_TEST) win.webContents.openDevTools()
   } else {
-    createProtocol('app')
     // Load the index.html when not in development
-    await win.loadURL('app://./index.html')
+    await win.loadURL(`app://./${prodPath}`) // "index.html"
     await win.webContents.openDevTools()
   }
 }
@@ -85,7 +115,9 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) createWindow()
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow('', 'index.html')
+  }
 })
 
 // This method will be called when Electron has finished
@@ -100,7 +132,12 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
   }
-  createWindow()
+  // register app:// protocol globally
+  if (!process.env.WEBPACK_DEV_SERVER_URL) {
+    createProtocol('app')
+  }
+
+  await createWindow('', 'index.html')
 })
 
 // Exit cleanly on request from parent process in development mode.

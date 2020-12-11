@@ -13,7 +13,8 @@ import { autoUpdater, UpdateDownloadedEvent, UpdateInfo } from 'electron-updater
 
 let updater: MenuItem
 autoUpdater.autoDownload = false
-autoUpdater.fullChangelog = true
+// set to false. List if `updater.fullChangelog` is set to `true`, `string` otherwise.(include html format)
+autoUpdater.fullChangelog = false
 // fix bug: electron-updater will update even I don't call quitAndInstall after app quit
 // https://github.com/electron-userland/electron-builder/issues/2493
 autoUpdater.autoInstallOnAppQuit = false
@@ -28,7 +29,7 @@ autoUpdater.on('update-available', (info: UpdateInfo) => {
     type: 'info',
     title: '发现更新',
     message: `新版本: ${info.version}. 是否立即下载？`,
-    detail: '更新内容: ' + info.releaseNotes,  // todo fix show github release notes html format,info.releaseNotes maybe Object. Or use custom window
+    detail: '更新内容: ' + info.releaseNotes,  // use custom window
     buttons: ['是', '否'],
     cancelId: 1 // when close dialog, means choose 1
   }).then((returnValue: MessageBoxReturnValue) => {
