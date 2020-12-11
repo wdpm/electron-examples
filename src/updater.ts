@@ -8,10 +8,11 @@
  * 1. create `updater.js` for the code snippet
  * 2. require `updater.js` for menu implementation, and set `checkForUpdates` callback from `updater` for the click property of `Check Updates...` MenuItem.
  */
-import { app, dialog, MenuItem, MessageBoxReturnValue } from 'electron'
+import { app, BrowserWindow, dialog, MenuItem, MessageBoxReturnValue } from 'electron'
 import { autoUpdater, UpdateDownloadedEvent, UpdateInfo } from 'electron-updater'
 
 let updater: MenuItem
+let parentWindow: BrowserWindow
 autoUpdater.autoDownload = false
 // set to false. List if `updater.fullChangelog` is set to `true`, `string` otherwise.(include html format)
 autoUpdater.fullChangelog = false
@@ -24,21 +25,27 @@ autoUpdater.on('error', (error: any) => {
   updater.enabled = true
 })
 
-autoUpdater.on('update-available', (info: UpdateInfo) => {
-  dialog.showMessageBox({
-    type: 'info',
-    title: '发现更新',
-    message: `新版本: ${info.version}. 是否立即下载？`,
-    detail: '更新内容: ' + info.releaseNotes,  // use custom window
-    buttons: ['是', '否'],
-    cancelId: 1 // when close dialog, means choose 1
-  }).then((returnValue: MessageBoxReturnValue) => {
-    if (returnValue.response === 0) {
-      autoUpdater.downloadUpdate()
-    } else {
-      updater.enabled = true
-    }
-  })
+autoUpdater.on('update-available', (updateInfo: UpdateInfo) => {
+  // when enter this callback, use IPC to send info to ModalUpdateAvailable.vue
+  if (parentWindow) {
+    parentWindow.webContents.send('update-available', updateInfo)
+  }
+
+  // @deprecated
+  // dialog.showMessageBox({
+  //   type: 'info',
+  //   title: '发现更新',
+  //   message: `新版本: ${info.version}. 是否立即下载？`,
+  //   detail: '更新内容: ' + info.releaseNotes,  // use custom window
+  //   buttons: ['是', '否'],
+  //   cancelId: 1 // when close dialog, means choose 1
+  // }).then((returnValue: MessageBoxReturnValue) => {
+  //   if (returnValue.response === 0) {
+  //     autoUpdater.downloadUpdate()
+  //   } else {
+  //     updater.enabled = true
+  //   }
+  // })
 })
 
 // this event sometimes will NOT emit because of differential download
@@ -72,8 +79,9 @@ autoUpdater.on('update-downloaded', (updateDownloadedEvent: UpdateDownloadedEven
 })
 
 // export this to MenuItem click callback
-export function checkForUpdates (menuItem: any, focusedWindow: any) {
+export function checkForUpdates (menuItem: MenuItem, focusedWindow: BrowserWindow) {
   updater = menuItem
+  parentWindow = focusedWindow
   updater.enabled = false
   autoUpdater.checkForUpdates()
 }

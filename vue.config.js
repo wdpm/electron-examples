@@ -10,7 +10,7 @@ module.exports = {
   // example repo: https://github.com/nklayman/electron-multipage-example
   pages: {
     index: 'src/main.ts',
-    modalUpdate: 'src/app/subpage/modal-update/main.js'
+    foo: 'src/app/subpage/foo/main.js'
   },
   pluginOptions: {
     electronBuilder: {
@@ -20,7 +20,7 @@ module.exports = {
       builderOptions: {
         publish: ['github'],
         productName: `${packageName}`,
-        appId: `com.dd_center.${artifactNameInAppId}`,
+        appId: `com.github.${artifactNameInAppId}`,
         copyright: 'Copyright © 2020 open source',
         // files: [
         //   'dist_electron',
