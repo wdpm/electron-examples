@@ -1,9 +1,9 @@
 {
   "name": "vue-electron-app-starter",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "private": true,
   "author": "wdpm",
-  "description": "bilibili-dd-center is an app for DD to watch multi vtuber live at the same time.",
+  "description": "A starter project for vue + electron app.",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

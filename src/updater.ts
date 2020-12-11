@@ -10,6 +10,7 @@
  */
 import { app, BrowserWindow, dialog, MenuItem, MessageBoxReturnValue } from 'electron'
 import { autoUpdater, UpdateDownloadedEvent, UpdateInfo } from 'electron-updater'
+import { ProgressInfo } from 'builder-util-runtime'
 
 let updater: MenuItem
 let parentWindow: BrowserWindow
@@ -30,6 +31,7 @@ autoUpdater.on('update-available', (updateInfo: UpdateInfo) => {
   if (parentWindow) {
     parentWindow.webContents.send('update-available', updateInfo)
   }
+  updater.enabled = true
 
   // @deprecated
   // dialog.showMessageBox({
@@ -50,7 +52,7 @@ autoUpdater.on('update-available', (updateInfo: UpdateInfo) => {
 
 // this event sometimes will NOT emit because of differential download
 // https://github.com/electron-userland/electron-builder/issues/2521
-autoUpdater.on('download-progress', (progressInfo: any) => {
+autoUpdater.on('download-progress', (progressInfo: ProgressInfo) => {
   // do better: show download progress bar
   // mainWindow.send()...
 })
@@ -76,6 +78,7 @@ autoUpdater.on('update-downloaded', (updateDownloadedEvent: UpdateDownloadedEven
       autoUpdater.quitAndInstall()
     }
   })
+  updater.enabled = true
 })
 
 // export this to MenuItem click callback

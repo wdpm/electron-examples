@@ -1,6 +1,7 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, dialog, Menu, shell, MenuItem } from 'electron'
+import { app, protocol, BrowserWindow, Menu, MenuItem, ipcMain, IpcMainEvent } from 'electron'
+import { autoUpdater } from 'electron-updater'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import path from 'path'
@@ -26,7 +27,7 @@ function createAboutModal (parentWindow: Electron.BrowserWindow, devPath: string
       enableRemoteModule: true,
       nodeIntegration: true
     }
-  });
+  })
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     window.loadURL(process.env.WEBPACK_DEV_SERVER_URL + devPath)
@@ -79,7 +80,7 @@ async function createWindow (devPath: string, prodPath: string) {
         {
           label: '关于',
           click: (item: MenuItem, focusedWindow: Electron.BrowserWindow) => {
-            createAboutModal(focusedWindow, 'modalUpdate', 'modalUpdate.html')
+            createAboutModal(focusedWindow, 'foo', 'foo.html')
           }
         }
       ]
@@ -101,7 +102,14 @@ async function createWindow (devPath: string, prodPath: string) {
     await win.loadURL(`app://./${prodPath}`) // "index.html"
     await win.webContents.openDevTools()
   }
+
+  return win
 }
+
+ipcMain.on('user-confirm-download', (event: IpcMainEvent, ...args: any[]) => {
+  console.log('ipcMain: user-confirm-download')
+  autoUpdater.downloadUpdate()
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -116,7 +124,7 @@ app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow('', 'index.html')
+    mainWindow = createWindow('', 'index.html')
   }
 })
 
@@ -137,7 +145,7 @@ app.on('ready', async () => {
     createProtocol('app')
   }
 
-  await createWindow('', 'index.html')
+  mainWindow = await createWindow('', 'index.html')
 })
 
 // Exit cleanly on request from parent process in development mode.

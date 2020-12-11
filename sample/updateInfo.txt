@@ -1,0 +1,6 @@
+path: "vue-electron-app-starter-0.1.7-setup.exe"
+releaseDate: "2020-12-11T10:57:44.153Z"
+releaseName: "0.1.7 版本更新"
+releaseNotes: "<h3>features</h3>↵<ul>↵<li>auto updater test passed</li>↵<li>icons generated passed</li>↵</ul>"
+sha512: "HUwxiNiPWCMRnKCpzYwyO4oKVci/Twg0NOEEIbd22PelnpjWwuoJ4Yvow/l6z6iC1eFTS813dkMO1zc/RgZNRg=="
+version: "0.1.7"
