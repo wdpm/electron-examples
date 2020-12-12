@@ -1,6 +1,6 @@
 {
   "name": "vue-electron-app-starter",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "private": true,
   "author": "wdpm",
   "description": "A starter project for vue + electron app.",
