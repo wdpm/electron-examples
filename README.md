@@ -9,7 +9,7 @@
 ![GitHub last commit](https://img.shields.io/github/last-commit/wdpm/vue-electron-app-starter)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/wdpm/vue-electron-app-starter)
 
-## Project command line
+## Command line
 ```
 "serve": "vue-cli-service serve",
 "build": "vue-cli-service build",
