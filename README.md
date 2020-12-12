@@ -1,4 +1,5 @@
 # vue-electron-app-starter
+![Build Electron App](https://github.com/wdpm/vue-electron-app-starter/workflows/Build%20Electron%20App/badge.svg?branch=main)
 
 ## Project command line
 ```
