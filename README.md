@@ -22,9 +22,5 @@
 "postuninstall": "electron-builder install-app-deps"
 ```
 
-## todo
-- setup FOSSA for license scan
-
-
 ## License
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fwdpm%2Fvue-electron-app-starter.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fwdpm%2Fvue-electron-app-starter?ref=badge_large)
