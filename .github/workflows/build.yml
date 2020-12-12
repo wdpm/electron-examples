@@ -21,6 +21,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run linters
+      - name: Run Build
         run: |
           npm run electron:build
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
