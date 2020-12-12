@@ -1,6 +1,13 @@
 # vue-electron-app-starter
 ![Build Electron App](https://github.com/wdpm/vue-electron-app-starter/workflows/Build%20Electron%20App/badge.svg?branch=main)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fwdpm%2Fvue-electron-app-starter.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fwdpm%2Fvue-electron-app-starter?ref=badge_shield)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/wdpm/vue-electron-app-starter)
+![GitHub repo size](https://img.shields.io/github/repo-size/wdpm/vue-electron-app-starter)
+![Lines of code](https://img.shields.io/tokei/lines/github/wdpm/vue-electron-app-starter)
+![GitHub all releases](https://img.shields.io/github/downloads/wdpm/vue-electron-app-starter/total)
+![GitHub contributors](https://img.shields.io/github/contributors/wdpm/vue-electron-app-starter)
+![GitHub last commit](https://img.shields.io/github/last-commit/wdpm/vue-electron-app-starter)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/y/wdpm/vue-electron-app-starter)
 
 ## Project command line
 ```
