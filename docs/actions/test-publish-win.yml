@@ -1,9 +1,8 @@
-name: Test build Electron App
-
+name: Test release win app
 on:
   push:
     tags:
-      - v/test/*
+      - test*
 
 jobs:
   test-build:
@@ -27,7 +26,6 @@ jobs:
       - name: npm install
         run: |
           npm install
-
       - name: test build win app
         run: |
           npm run electron:publish-win

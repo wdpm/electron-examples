@@ -1,4 +1,4 @@
-name: Build/publish Electron App
+name: Release all platform
 
 on:
   push:
@@ -27,7 +27,6 @@ jobs:
       - name: npm install
         run: |
           npm install
-
       - name: build/publish windows app
         if: matrix.os == 'windows-latest'
         run: |
