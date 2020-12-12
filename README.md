@@ -1,5 +1,6 @@
 # vue-electron-app-starter
 ![Build Electron App](https://github.com/wdpm/vue-electron-app-starter/workflows/Build%20Electron%20App/badge.svg?branch=main)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fwdpm%2Fvue-electron-app-starter.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fwdpm%2Fvue-electron-app-starter?ref=badge_shield)
 
 ## Project command line
 ```
@@ -23,3 +24,7 @@
 
 ## todo
 - setup FOSSA for license scan
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fwdpm%2Fvue-electron-app-starter.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fwdpm%2Fvue-electron-app-starter?ref=badge_large)
