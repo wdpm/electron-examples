@@ -6,6 +6,7 @@ import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
 import path from 'path'
 import { checkForUpdates } from './updater'
+import { SettingService } from "@/electron/services/SettingService";
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
@@ -145,6 +146,7 @@ app.on('ready', async () => {
     createProtocol('app')
   }
 
+  SettingService.setIsNotifiedOnStartSync(true)
   mainWindow = await createWindow('', 'index.html')
 })
 
