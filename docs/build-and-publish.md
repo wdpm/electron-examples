@@ -1,4 +1,15 @@
-# how to push
+# how to build/push
+
+## build
+> https://www.electron.build/multi-platform-build
+
+For example, to build app for MacOS, Windows and Linux:
+```
+electron-builder -mwl
+```
+Build performed in parallel, so, it is highly recommended to not use npm task per platform (e.g. npm run dist:mac && npm run dist:win32), but specify multiple platforms/targets in one build command. You don’t need to clean dist output before build — output directory is cleaned automatically.
+
+## publish
 > https://www.electron.build/configuration/publish
 
 But please consider using automatic rules instead of explicitly specifying publish:

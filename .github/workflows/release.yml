@@ -2,11 +2,8 @@ name: Build Electron App
 
 on:
   push:
-    # Sequence of patterns matched against refs/heads
     branches:
-      # Push events on main branch
       - main
-    # Sequence of patterns matched against refs/tags
     tags:
       - v*.*.*
 
@@ -33,26 +30,23 @@ jobs:
         run: |
           npm install
 
-      # build app for win
-      - name: build windows app
+      - name: build/publish windows app
         if: matrix.os == 'windows-latest'
         run: |
-          npm run electron:build-win
+          npm run electron:publish-win
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # build app for mac
-      - name: build mac app
+      - name: build/publish mac app
         if: matrix.os == 'macos-latest'
         run: |
-          npm run electron:build-mac
+          npm run electron:publish-mac
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # build app for linux
-      - name: build linux app
+      - name: build/publish linux app
         if: matrix.os == 'ubuntu-latest'
         run: |
-          npm run electron:build-linux
+          npm run electron:publish-linux
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
