@@ -1,5 +1,6 @@
 # vue-electron-app-starter
 ![Build](https://github.com/wdpm/vue-electron-app-starter/workflows/Build/badge.svg)
+![GitHub issues](https://img.shields.io/github/issues/wdpm/vue-electron-app-starter)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fwdpm%2Fvue-electron-app-starter.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fwdpm%2Fvue-electron-app-starter?ref=badge_shield)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/wdpm/vue-electron-app-starter)
 ![GitHub repo size](https://img.shields.io/github/repo-size/wdpm/vue-electron-app-starter)
