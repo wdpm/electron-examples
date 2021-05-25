@@ -24,7 +24,7 @@
   },
   "main": "background.js",
   "dependencies": {
-    "core-js": "^3.6.5",
+    "core-js": "^3.13.0",
     "electron-settings": "^4.0.2",
     "electron-updater": "^4.3.5",
     "vue": "^2.6.11",
