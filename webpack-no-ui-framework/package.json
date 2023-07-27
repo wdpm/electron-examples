@@ -1,0 +1,29 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron-webpack dev",
+    "release": "yarn compile && electron-builder"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^11.1.0",
+    "electron-builder": "^22.9.1",
+    "electron-webpack": "^2.8.2",
+    "source-map-support": "^0.5.19",
+    "webpack": "^4.6.0"
+  },
+  "electronWebpack": {
+    "staticSourceDirectory": "src/static",
+    "main": {
+      "sourceDirectory": "src/main"
+    },
+    "renderer": {
+      "sourceDirectory": "src/renderer",
+      "webpackConfig": "script/webpack.js"
+    }
+  }
+}

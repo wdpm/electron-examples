@@ -1,0 +1,9 @@
+{
+  "name": "addon",
+  "version": "0.0.1",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "node-addon-api": "^3.2.1"
+  }
+}

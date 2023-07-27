@@ -1,0 +1,45 @@
+<html>
+  <head><title></title></head>
+  <body>
+    <button id="startDebugBtn">开始调试</button>
+    <script>
+      document.getElementById("startDebugBtn").addEventListener("click",()=>{
+        let {spawn} = require("child_process")
+        let path = require("path");
+        let targetPath = path.join(process.cwd(),"target.js")
+        let port = 1666
+        let info = ""
+        let detectFlag = false
+        let detect = async ()=>{
+          if(detectFlag) return
+          detectFlag = true
+          let targetInfo = await fetch(`http://127.0.0.1:${port}/json`).then(response=>response.json()) ///json/list
+          console.log('targetInfo[0]: ',targetInfo[0])
+          window.open(targetInfo[0].devtoolsFrontendUrl)
+        }
+        let sp = spawn(
+          `node`,
+          [`--inspect-brk=${port}`, targetPath],  //--inspect-brk
+          {
+            cwd:process.cwd(),
+          }
+        )
+        sp.on('error', (err) => {
+          console.error(err.message)
+        })
+        let onData = chunk => {
+            let chunkString = chunk.toString()
+            info += chunkString
+            if(info.includes('Debugger listening on')) detect()
+            console.log(chunkString)
+          }
+        if (sp.stdout) {
+          sp.stdout.on('data', onData)
+        }
+        if (sp.stderr) {
+          sp.stderr.on('data', onData)
+        }
+      })
+    </script>
+  </body>
+</html>

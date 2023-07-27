@@ -1,0 +1,8 @@
+/release/bundled
+/src/addon/build
+src/addon/bin/win32-x64-87
+src/addonNodeApi/build
+src/addonNodeApi/bin
+node_modules
+/addonNodeApi/build
+!/addonNodeApi/build/Release/addon.node
