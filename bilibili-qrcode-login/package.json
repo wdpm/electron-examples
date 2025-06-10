@@ -5,7 +5,7 @@
   "author": {
     "name": "wdpm"
   },
-  "main": "build/index2.js",
+  "main": "build/main.js",
   "scripts": {
     "compile": "tsc && copyfiles -f src/{index.html,preload.js} build",
     "start": "npm run compile && electron .",

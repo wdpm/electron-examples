@@ -1,5 +1,13 @@
 import qrcode from "qrcode";
-import CookieParser from "tough-cookie";
+import {parse as cookieParse} from "tough-cookie";
+import {
+    existLoginCookiesInBrowser,
+    getLoginCookiesInBrowser,
+    CookieState,
+    MissingCookie,
+    UnValidCookie, ValidCookie, UnDeterminatedCookie, recoverLoginCookiesToBrowser, readJSONFile
+} from "./cookie";
+import {existsSync} from "node:fs";
 
 const CONFIG = {
     "url": {
@@ -73,7 +81,7 @@ async function generateQrcodeImage(url_qrcode) {
 
 function parseCookies(cookies) {
     return cookies.reduce((prevVal, curVal, curIdx, arr) => {
-        const oneCookie = CookieParser.parse(curVal)
+        const oneCookie = cookieParse(curVal)
         if (oneCookie) {
             prevVal.push(oneCookie);
         }
@@ -134,7 +142,6 @@ enum LoginStatus {
     UNKNOWN = 'UNKNOWN'
 }
 
-// 定义返回类型
 interface CheckLoginStatusRS {
     status: LoginStatus
     message: string
@@ -223,8 +230,67 @@ async function checkLoginStatusWithRetry(cookieArray: [], maxTries = 3): Promise
     }
 }
 
+async function checkLoginCookieInBrowser(session) {
+    let result: CookieState = MissingCookie;
+    const winSession = session;
+
+    const has = await existLoginCookiesInBrowser(winSession);
+    if (!has) {
+        result = MissingCookie
+    } else {
+        const cookiesInBrowser = await getLoginCookiesInBrowser(winSession);
+        if (cookiesInBrowser.length > 0) {
+            const checkLoginStatusRS: CheckLoginStatusRS = await checkLoginStatusWithRetry(cookiesInBrowser);
+
+            switch (checkLoginStatusRS.status) {
+                case LoginStatus.INVALID:
+                    result = UnValidCookie
+                    break;
+                case LoginStatus.VALID:
+                    result = ValidCookie
+                    break;
+                case LoginStatus.UNKNOWN:
+                    result = UnDeterminatedCookie
+                    break;
+            }
+        }
+    }
+
+    return result;
+}
+
+async function checkLoginCookieInJSONFile(absoluteFilePath) {
+    let result: CookieState = MissingCookie;
+
+    const has = existsSync(absoluteFilePath);
+    if (!has) {
+        result = MissingCookie
+    } else {
+        const jsonArray = await readJSONFile(absoluteFilePath);
+        if (jsonArray.length > 0) {
+            const checkLoginStatusRS: CheckLoginStatusRS = await checkLoginStatusWithRetry(jsonArray);
+            switch (checkLoginStatusRS.status) {
+                case LoginStatus.INVALID:
+                    result = UnValidCookie
+                    break;
+                case LoginStatus.VALID:
+                    result = ValidCookie
+                    break;
+                case LoginStatus.UNKNOWN:
+                    result = UnDeterminatedCookie
+                    break;
+            }
+        }
+    }
+
+    return result;
+}
+
 export {
-    checkLoginStatusWithRetry,
+    CheckLoginStatusRS,
+    LoginStatus,
+    checkLoginCookieInBrowser,
+    checkLoginCookieInJSONFile,
     prepareQrcodeLogin,
     generateQrcodeImage,
     checkScanQrcode

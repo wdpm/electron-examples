@@ -1,35 +1,53 @@
 import {app, BrowserWindow} from 'electron';
-import {join} from "node:path";
+import path, {join} from "node:path";
 
-import {existLoginCookiesInBrowser, saveLoginCookiesToFile, setupLoginCookiesInBrowser} from './cookie'
-import {generateQrcodeImage, checkScanQrcode, prepareQrcodeLogin} from "./login";
-import { ipcMain } from 'electron/main';
+import {
+    deleteJSONFile,
+    deleteLoginCookieInBrowser,
+    existLoginCookiesInBrowser,
+    saveLoginCookiesToFile,
+    setupLoginCookiesInBrowser
+} from './cookie'
+import {
+    checkLoginCookieInBrowser,
+    checkLoginCookieInJSONFile,
+    checkScanQrcode,
+    generateQrcodeImage,
+    prepareQrcodeLogin
+} from "./login";
+import {ipcMain} from 'electron/main';
 
-const COOKIE_SAVE_FILE = 'bilibili-login-cookies.json'
+const COOKIE_FILE_NAME = 'bilibili-login-cookies.json'
+// D:\Code\MyGithubProjects\electron-examples\bilibili-qrcode-login\build\bilibili-login-cookies.json
+const COOKIE_ABSOLUTE_PATH = path.join(__dirname, COOKIE_FILE_NAME);
 
 function setupIPCListeners(win) {
-    ipcMain.on('check-browser-cookie', (event) => {
+    ipcMain.on('check-browser-cookie', async (event) => {
+        const cookieState = await checkLoginCookieInBrowser(win.webContents.session);
         event.sender.send('cookie-response', {
             type: 'check-browser-cookie',
-            result: {}
+            result: cookieState
         });
     });
 
-    ipcMain.on('delete-browser-cookie', (event) => {
+    ipcMain.on('delete-browser-cookie', async (event) => {
+        const _ = await deleteLoginCookieInBrowser(win.webContents.session);
         event.sender.send('cookie-response', {
             type: 'delete-browser-cookie',
             result: {}
         });
     });
 
-    ipcMain.on('check-external-cookie', (event) => {
+    ipcMain.on('check-external-cookie', async (event) => {
+        const cookieState = await checkLoginCookieInJSONFile(COOKIE_ABSOLUTE_PATH);
         event.sender.send('cookie-response', {
             type: 'check-external-cookie',
-            result: {}
+            result: cookieState
         });
     });
 
-    ipcMain.on('delete-external-cookie', (event) => {
+    ipcMain.on('delete-external-cookie', async (event) => {
+        const ok = await deleteJSONFile(COOKIE_ABSOLUTE_PATH);
         event.sender.send('cookie-response', {
             type: 'delete-external-cookie',
             result: {}
@@ -75,11 +93,11 @@ async function createWindow() {
         console.log('浏览器login cookies检查写入结果: ', isLogined)
 
         // persist cookieArray
-        await saveLoginCookiesToFile(winSession, COOKIE_SAVE_FILE)
+        await saveLoginCookiesToFile(winSession, COOKIE_ABSOLUTE_PATH)
     }
 
-    const url = "https://www.bilibili.com/blackboard/live/live-activity-player.html?enterTheRoom=0&cid=5895809"
-    win.loadURL(url)
+    // const url = "https://www.bilibili.com/blackboard/live/live-activity-player.html?enterTheRoom=0&cid=5895809"
+    // win.loadURL(url)
 }
 
 app.whenReady().then(() => {

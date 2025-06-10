@@ -41,6 +41,41 @@ async function setAllCookies(session, cookiesArray) {
 
 const LOGIN_COOKIE_NAMES = ['SESSDATA', 'bili_jct', 'DedeUserID', 'DedeUserID__ckMd5', 'sid'];
 
+enum CookieExistence {
+    Present = "Present",
+    Absent = "Absent",
+}
+
+enum CookieAvailability {
+    Available = "Available",
+    Unavailable = "Unavailable",
+    Unknown = "Unknown",
+}
+
+export interface CookieState {
+    existence: CookieExistence;
+    availability?: CookieAvailability;
+}
+
+export const MissingCookie: CookieState = {
+    existence: CookieExistence.Absent,
+};
+
+export  const ValidCookie: CookieState = {
+    existence: CookieExistence.Present,
+    availability: CookieAvailability.Available,
+};
+
+export const UnValidCookie: CookieState = {
+    existence: CookieExistence.Present,
+    availability: CookieAvailability.Unavailable,
+};
+
+export const UnDeterminatedCookie: CookieState = {
+    existence: CookieExistence.Present,
+    availability: CookieAvailability.Unknown,
+};
+
 async function existLoginCookiesInBrowser(session) {
     const cookies = await session.cookies.get({domain: '.bilibili.com'})
     return LOGIN_COOKIE_NAMES.every(name =>
@@ -53,31 +88,46 @@ async function getLoginCookiesInBrowser(session) {
     return cookies.filter(cookie => LOGIN_COOKIE_NAMES.includes(cookie.name))
 }
 
-async function recoverLoginCookiesToBrowser(session, sourceFile) {
-    const jsonArr = await readJSONFromFile(sourceFile);
+async function deleteLoginCookieInBrowser(session: Electron.Session){
+    LOGIN_COOKIE_NAMES.every(async name =>
+        await session.cookies.remove('https://bilibili.com', name)
+    );
+}
+
+async function recoverLoginCookiesToBrowser(session, absoluteFilePath) {
+    const jsonArr = await readJSONFile(absoluteFilePath);
     await setAllCookies(session, jsonArr)
 }
 
-async function saveLoginCookiesToFile(session, filename) {
+async function saveLoginCookiesToFile(session: Electron.Session, absoluteFilePath) {
     const cookiesToSave = (await Promise.all(
         LOGIN_COOKIE_NAMES.map(name => session.cookies.get({name}))
-    )).filter(Boolean); // 自动过滤掉 null/undefined
+    )).flat().filter(Boolean); // 过滤掉 null/undefined
 
     try {
-        writeFileSync(filename, JSON.stringify(cookiesToSave))
+        writeFileSync(absoluteFilePath, JSON.stringify(cookiesToSave))
     } catch (err) {
         console.error('Write login cookies failed.', err)
     }
 }
 
-async function readJSONFromFile(filename) {
+async function readJSONFile(absoluteFilePath) {
     try {
-        const filePath = path.join(__dirname, filename)
-        const data = await fs.promises.readFile(filePath, 'utf-8')
+        const data = await fs.promises.readFile(absoluteFilePath, 'utf-8')
         return JSON.parse(data)
     } catch (error) {
-        console.error('读取Cookie文件失败:', error)
+        console.error('读取JSON文件失败:', error)
         return []
+    }
+}
+
+async function deleteJSONFile(absoluteFilePath) {
+    try {
+        const ok = await fs.promises.unlink(absoluteFilePath)
+        return true
+    } catch (error) {
+        console.error('删除JSON文件失败:', error)
+        return false
     }
 }
 
@@ -115,10 +165,12 @@ async function setupLoginCookiesInBrowser(session, rawCookieArray) {
 }
 
 export {
+    deleteLoginCookieInBrowser,
     existLoginCookiesInBrowser,
     getLoginCookiesInBrowser,
     recoverLoginCookiesToBrowser,
     setupLoginCookiesInBrowser,
     saveLoginCookiesToFile,
-    readJSONFromFile,
+    readJSONFile,
+    deleteJSONFile
 }
