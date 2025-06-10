@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+</head>
+<body>
+<h1>Hello Electron World!</h1>
+<img id="qrcode-img" style="width: 200px; height: 200px;"  alt="qrcode"/>
+<p>请扫二维码登录。</p>
+<div>
+    <button id="check-browser-cookie">检测浏览器cookie</button>
+    <button id="delete-browser-cookie">删除浏览器cookie</button>
+    <button id="check-external-cookie">检测外部存储cookie</button>
+    <button id="delete-external-cookie">删除外部存储cookie</button>
+</div>
+
+<script>
+    window.electronAPI.on('qrcode-update', (event, url) => {
+        document.getElementById('qrcode-img').src = url;
+    });
+
+    // Optional: Add response handlers if you want to show results
+    window.electronAPI.on('cookie-response', (event, {type, result}) => {
+        console.log(`${type} result:`, result);
+    });
+
+    // Button event handlers
+    document.getElementById('check-browser-cookie').addEventListener('click', () => {
+        window.electronAPI.send('check-browser-cookie');
+    });
+
+    document.getElementById('delete-browser-cookie').addEventListener('click', () => {
+        window.electronAPI.send('delete-browser-cookie');
+    });
+
+    document.getElementById('check-external-cookie').addEventListener('click', () => {
+        window.electronAPI.send('check-external-cookie');
+    });
+
+    document.getElementById('delete-external-cookie').addEventListener('click', () => {
+        window.electronAPI.send('delete-external-cookie');
+    });
+</script>
+</body>
+</html>

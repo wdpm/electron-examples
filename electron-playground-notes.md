@@ -1358,21 +1358,44 @@ export const getDownloadData = (
 
 ### 单例app
 ```ts
-const gotLock = app.requestSingleInstanceLock()
-if (!gotLock) {
+const gotTheLock = app.requestSingleInstanceLock()
+// 获取单体实例锁，设置应用单开
+if (!gotTheLock) {
   app.quit()
-  return
+} else {
+  app.on('second-instance', (event, commandLine, workingDirectory) => {
+    // 当运行第二个实例时,将会聚焦到mainWindow这个窗口
+    if (mainWindow) {
+      if (mainWindow.isMinimized()) mainWindow.restore()
+      mainWindow.focus()
+    }
+  })
+  app.on('ready', createWindow)
+  app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+      app.quit()
+    }
+  })
+  app.on('activate', () => {
+    if (mainWindow === null) {
+      createWindow()
+    }
+  })
 }
 ```
 
 ## npm 换源
 
 `.npmrc`
-
 ```
 registry=https://registry.npmmirror.com/
 electron_mirror=https://npmmirror.com/mirrors/electron/
-chromedriver_cdnurl=https://registry.npmmirror.com/binary.html?path=chromedriver/
+electron_builder_binaries_mirror=https://npmmirror.com/mirrors/electron-builder-binaries/
+sqlite3_binary_host_mirror=https://npmmirror.com/mirrors/sqlite3/
+# sass_binary_site=https://npmmirror.com/mirrors/node-sass/
+chromedriver_cdnurl=https://npmmirror.com/mirrors/chromedriver/
+operadriver_cdnurl=https://npmmirror.com/mirrors/operadriver/
+fse_binary_host_mirror=https://npmmirror.com/mirrors/fsevents/
 ```
 
 这种 links 很容易随着时间推移而失效，使用前最好到浏览器访问来验证是否还可用。
@@ -1683,7 +1706,7 @@ export default App;
 
 ```ts
 // app/updater.ts
-import { autoUpdater, UpdateInfo } from 'electron-updater'
+import {autoUpdater, UpdateInfo} from 'electron-updater'
 
 interface CheckResult {
   // 是否有更新
@@ -1707,7 +1730,7 @@ type DownloadedCallback = () => void
 
 abstract class AppUpdateService {
   // 检查更新
-  public abstract checkUpdate(): CheckResult
+  public abstract checkUpdate(): CheckCookieStatusRS
 
   // 下载更新
   public abstract downloadUpdate(params: {
